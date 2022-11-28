@@ -29,7 +29,7 @@ def get_all_rows(html: BeautifulSoup):
 
 
 def group_rows_by_dates(rows: list):
-    it = iter([(k, list(group)) for k, group in groupby(rows, lambda row: row.find('td', {'class': 'R2C0'}))])
+    it = iter([(k, list(group)) for k, group in groupby(rows, lambda row: row.find('td', {'class': re.compile(r'R\d+C0')}))])
     date_lessons = zip(it, it)
     return {x[0][0].text.strip(): x[0][1] + x[1][1] for x in date_lessons}
 
