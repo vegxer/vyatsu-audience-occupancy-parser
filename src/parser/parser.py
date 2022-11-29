@@ -55,7 +55,7 @@ def get_lesson_number(lessons_row):
 def set_lesson_names(rooms, lessons_row, lesson_number, date_group_key):
     i = 0
     room_keys = list(rooms)
-    lesson_name_elements = lessons_row.find_all('td', {'class': re.compile(r'R\d+C2')})
+    lesson_name_elements = lessons_row.find_all('td', {'class': re.compile(r'R\d+C([2-9]|\d\d+)')})
     while i < len(rooms) and i < len(lesson_name_elements):
         rooms[room_keys[i]][date_group_key][lesson_number] = lesson_name_elements[i].text.replace('\xa0', ' ')
         i += 1

@@ -37,7 +37,8 @@ class TelegramBot:
 
     def __parse_page(self, update: Update, context: CallbackContext):
         parsed_data = parse_schedule(update.message.text.strip())
-        buttons = [list(parsed_data)]
+        it = iter(parsed_data)
+        buttons = zip(it, it, it)
         context.user_data["schedule"] = parsed_data
         update.message.reply_text(
             'Выберите аудиторию',
@@ -48,7 +49,8 @@ class TelegramBot:
 
     def __choose_date(self, update: Update, context: CallbackContext):
         chosen_room = update.message.text.strip()
-        buttons = [list(context.user_data["schedule"][chosen_room])]
+        it = iter(context.user_data["schedule"][chosen_room])
+        buttons = zip(it, it)
         context.user_data["chosen_room"] = chosen_room
         update.message.reply_text(
             'Выберите дату',
