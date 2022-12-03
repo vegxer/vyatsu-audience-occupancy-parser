@@ -7,7 +7,8 @@ from telegram.ext import ConversationHandler
 from telegram import ReplyKeyboardMarkup
 from telegram import ReplyKeyboardRemove
 from telegram.ext.filters import Filters
-from src.parser import parse_schedule
+
+from parser import parse_schedule
 
 
 class TelegramBot:
