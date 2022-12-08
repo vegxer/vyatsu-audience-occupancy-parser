@@ -1,3 +1,3 @@
-from .parser import parse_schedule
+from .parser import parse_schedule, parse_buildings
 
-__all__ = ['parse_schedule']
+__all__ = ['parse_schedule', 'parse_buildings']

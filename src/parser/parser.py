@@ -2,11 +2,24 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from itertools import groupby
+from urllib.parse import urljoin
+
+VYATSU_BASE_URL = 'https://www.vyatsu.ru'
+
+
+def parse_buildings(link='https://www.vyatsu.ru/studentu-1/spravochnaya-informatsiya/zanyatost-auditoriy.html'):
+    soup = BeautifulSoup(requests.get(link).content, 'html.parser')
+    return {
+        building.text.replace('№', '').strip(): {
+            re.sub(r'\s*п[оo]\s*', '\xa0–\n', re.sub(r'\s*[сc]\s*', '', date.text)).replace(' ', '.'): urljoin(VYATSU_BASE_URL, date['href'])
+            for date in building.parent.find_all('a', {'href': re.compile(r'\.html')})
+        }
+        for building in soup.find_all('div', {'class': 'korpPeriod'})
+    }
 
 
 def parse_schedule(link: str):
-    page = requests.get(link)
-    soup = BeautifulSoup(page.content, 'html.parser')
+    soup = BeautifulSoup(requests.get(link).content, 'html.parser')
 
     rooms = dict()
     for room in get_all_rooms(soup):
@@ -29,7 +42,8 @@ def get_all_rows(html: BeautifulSoup):
 
 
 def group_rows_by_dates(rows: list):
-    it = iter([(k, list(group)) for k, group in groupby(rows, lambda row: row.find('td', {'class': re.compile(r'R\d+C0')}))])
+    it = iter(
+        [(k, list(group)) for k, group in groupby(rows, lambda row: row.find('td', {'class': re.compile(r'R\d+C0')}))])
     date_lessons = zip(it, it)
     return {x[0][0].text.strip(): x[0][1] + x[1][1] for x in date_lessons}
 
